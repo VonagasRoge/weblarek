@@ -1,6 +1,5 @@
 import {
   IApi,
-  IProduct,
   IOrder,
   IOrderResult,
   IProductsResponse,
@@ -11,23 +10,12 @@ export class ApiService {
     this.api = api;
   }
 
-  async getProducts(): Promise<IProduct[]> {
-    try {
-      const response = await this.api.get<IProductsResponse>("/product");
-      return response.items;
-    } catch (error) {
-      console.error("Ошибка при получении товаров:", error);
-      throw error;
-    }
+  async getProducts(): Promise<IProductsResponse> {
+    const response = await this.api.get<IProductsResponse>("/product");
+    return response;
   }
 
-  async sendOrder(order: IOrder): Promise<IOrderResult> {
-    try {
-      const result = await this.api.post<IOrderResult>("/order", order);
-      return result;
-    } catch (error) {
-      console.error("Ошибка при отправке заказа:", error);
-      throw error;
-    }
+  sendOrder(order: IOrder): Promise<IOrderResult> {
+    return this.api.post<IOrderResult>("/order", order);
   }
 }

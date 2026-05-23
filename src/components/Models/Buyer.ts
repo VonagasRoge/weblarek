@@ -1,59 +1,46 @@
-import { IBuyer, IEvents, TValidationErrors } from "../../types";
-import { EventEmitter } from "../base/Events";
+import { IBuyer, TValidationErrors } from "../../types";
 
 export class Buyer {
-  private _data: IBuyer = {
+  private data: IBuyer = {
     payment: null,
     email: "",
     phone: "",
     address: "",
   };
-  private events: IEvents;
-
-  constructor(events: EventEmitter) {
-    this.events = events;
-  }
-
-  setField<T extends keyof IBuyer>(field: T, value: IBuyer[T]): void {
-    this._data[field] = value;
-    this.events.emit("Покупатель изменен", { data: this._data });
-  }
 
   setData(data: Partial<IBuyer>): void {
-    this._data = { ...this._data, ...data };
-    this.events.emit("Покупатель изменен", { data: this._data });
+    this.data = { ...this.data, ...data };
   }
 
   getData(): IBuyer {
-    return this._data;
+    return this.data;
   }
 
   clear(): void {
-    this._data = {
+    this.data = {
       payment: null,
       email: "",
       phone: "",
       address: "",
     };
-    this.events.emit("Данные покупателя изменены", { data: this._data });
   }
 
   validate(): TValidationErrors {
     const errors: TValidationErrors = {};
 
-    if (!this._data.email) {
+    if (!this.data.email) {
       errors.email = "Введите корректный E-mail адрес";
     }
 
-    if (!this._data.phone) {
+    if (!this.data.phone) {
       errors.phone = "Введите корректный номер телефона";
     }
 
-    if (!this._data.address) {
+    if (!this.data.address) {
       errors.address = "Введите корректный адрес";
     }
 
-    if (!this._data.payment) {
+    if (!this.data.payment) {
       errors.payment = "Выберите способ оплаты";
     }
 

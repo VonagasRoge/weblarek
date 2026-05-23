@@ -18,10 +18,10 @@ export interface IProduct {
   price: number | null;
 }
 
-export type TPayment = "card" | "cash" | null;
+export type TPayment = "card" | "cash";
 
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
@@ -42,13 +42,5 @@ export interface IProductsResponse {
   items: IProduct[];
 }
 
-export interface IEvents {
-  on<T extends object>(event: string, callback: (data: T) => void): void;
-  emit<T extends object>(event: string, data?: T): void;
-  trigger<T extends object>(
-    event: string,
-    context?: Partial<T>
-  ): (data: T) => void;
-}
 
 export type TValidationErrors = Partial<Record<keyof IBuyer, string>>;

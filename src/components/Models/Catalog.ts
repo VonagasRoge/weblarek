@@ -6,7 +6,6 @@ export class Catalog {
 
   setProducts(products: IProduct[]): void {
     this.products = products;
-    console.log("Каталог обновлен, товаров:", this.products.length);
   }
 
   getProducts(): IProduct[] {
@@ -19,7 +18,6 @@ export class Catalog {
 
   setSelectedProduct(product: IProduct): void {
     this.selectedProduct = product;
-    console.log("Выбран товар:", product.title);
   }
 
   getSelectedProduct(): IProduct | null {

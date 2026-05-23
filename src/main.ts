@@ -1,5 +1,4 @@
 import "./scss/styles.scss";
-import { EventEmitter } from "./components/base/Events";
 import { Catalog } from "./components/Models/Catalog";
 import { ShoppingCart } from "./components/Models/ShoppingCart";
 import { Buyer } from "./components/Models/Buyer";
@@ -7,24 +6,6 @@ import { apiProducts } from "./utils/data";
 import { ApiService } from "./components/Models/ApiService";
 import { API_URL } from "./utils/constants";
 import { Api } from "./components/base/Api";
-
-const events = new EventEmitter();
-
-events.on("Каталог обновлен", (data) => {
-  console.log("Каталог обновлен:", data);
-});
-
-events.on("Выбран товар", (data) => {
-  console.log("Выбран товар:", data);
-});
-
-events.on("Корзина изменена", (data) => {
-  console.log("Корзина изменена:", data);
-});
-
-events.on("Данные покупателя изменены", (data) => {
-  console.log("Данные покупателя изменены:", data);
-});
 
 console.log("начало тестирования модели данных");
 console.log("тестирование модели Catalog");
@@ -61,7 +42,7 @@ console.log("Выбранный продукт:", selectedProduct);
 console.log("Тестирование модели Catalog завершено");
 
 console.log("тестирование модели ShoppingCart");
-const cart = new ShoppingCart(events);
+const cart = new ShoppingCart();
 
 console.log("Добавление товаров в корзину");
 cart.addItem(apiProducts.items[0]);
@@ -106,15 +87,13 @@ console.log("Тестирование модели ShoppingCart завершен
 
 console.log("тестирование модели Buyer");
 
-const buyer = new Buyer(events);
+const buyer = new Buyer();
 
 console.log("Получение начальных данных");
 console.log("Начальные данные покупателя:", buyer.getData());
 
 console.log("Установка отдельных полей");
-buyer.setField("email", "test@test.com");
-buyer.setField("phone", "+79990123456");
-buyer.setField("address", "г. Томск, ул. Литвинова, д. 13");
+buyer.setData({ email: "test@test.com", phone: "+79990123456", address: "г. Томск, ул. Литвинова, д. 13" });
 console.log("Данные после установки полей:", buyer.getData());
 
 console.log("Валидация корректных данных");
@@ -144,8 +123,10 @@ const apiService = new ApiService(api);
 apiService
   .getProducts()
   .then((products) => {
-    console.log("данные получены", products);
+    console.log("Данные получены", products);
+    catalog.setProducts(products.items);
+    console.log("Товары сохранены в каталоге:", catalog.getProducts().length);
   })
   .catch((error) => {
-    console.error("ошибка. данные не получены", error);
+    console.error("Ошибка. данные не получены", error);
   });

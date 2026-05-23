@@ -1,13 +1,7 @@
-import { IProduct, IEvents } from "../../types";
-import { EventEmitter } from "../base/Events";
+import { IProduct } from "../../types";
 
 export class ShoppingCart {
   private items: IProduct[] = [];
-  private events: IEvents;
-
-  constructor(events: EventEmitter) {
-    this.events = events;
-  }
 
   getItems(): IProduct[] {
     return this.items;
@@ -16,36 +10,21 @@ export class ShoppingCart {
   addItem(product: IProduct): void {
     if (!this.containsItem(product.id)) {
       this.items.push(product);
-      this.events.emit("Корзина изменена", { items: this.items });
     }
   }
 
   removeItem(productId: string): void {
-    const newItems: IProduct[] = [];
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].id !== productId) {
-        newItems.push(this.items[i]);
-      }
-    }
-    this.items = newItems;
-    this.events.emit("Корзина изменена", { items: this.items });
+    this.items = this.items.filter(item => item.id !== productId);
   }
 
   clear(): void {
     this.items = [];
-    this.events.emit("Корзина изменена", { items: this.items });
   }
 
   getTotalPrice(): number {
-    let total = 0;
-
-    for (let i = 0; i < this.items.length; i++) {
-      const price = this.items[i].price;
-      if (price !== null) {
-        total = total + price;
-      }
-    }
-    return total;
+    return this.items.reduce((sum, item) => {
+      return item.price !== null ? sum + item.price : sum;
+    }, 0);
   }
 
   getItemCount(): number {
@@ -53,11 +32,6 @@ export class ShoppingCart {
   }
 
   containsItem(productId: string): boolean {
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].id === productId) {
-        return true;
-      }
-    }
-    return false;
+    return this.items.some(item => item.id === productId);
   }
 }
